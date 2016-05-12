@@ -6,15 +6,27 @@
  */
 
 {
+  function formatRight(left, right) {
+    var obj = {};
+    obj["$"+right.type] = [
+     formatLeft(left),
+     right.value
+    ]
+    return obj;
+  }
+
+  function formatLeft(left) {
+    var obj = {};
+    obj[left.left.name] = {}
+    obj[left.left.name]["$"+left.type] = left.right.value == null ? left.right.name : left.right.value;
+    return obj;
+  }
+
   function filterExprHelper(left, right){
     if (right) {
-        return {
-            type: right.type,
-            left: left,
-            right: right.value
-        }
+        return formatRight(left, right);
     } else {
-        return left;
+        return formatLeft(left);
     }
   }
 }
@@ -274,12 +286,12 @@ filter                      =   "$filter=" list:filterExpr {
                             /   "$filter=" .* { return {"error": 'invalid $filter parameter'}; }
 
 filterExpr                  = 
-                              left:("(" WSP? filter:filterExpr WSP? ")"{return filter}) right:( WSP type:("and"/"or") WSP value:filterExpr{
+                              left:("(" WSP? filter:filterExpr WSP? ")"{return filter}) right:( WSP type:("and"/"or"/"nor") WSP value:filterExpr{
                                     return { type: type, value: value}
                               })? {
                                 return filterExprHelper(left, right);
                               } / 
-                              left:cond right:( WSP type:("and"/"or") WSP value:filterExpr{
+                              left:cond right:( WSP type:("and"/"or"/"nor") WSP value:filterExpr{
                                     return { type: type, value: value}
                               })? {
                                 return filterExprHelper(left, right);
@@ -365,14 +377,10 @@ op                          =
                                 "eq" /
                                 "ne" /
                                 "lt" /
-                                "le" /
+                                "le" { { return "lte"; } } /
                                 "gt" /
-                                "ge" /
-                                "add" /
-                                "sub" /
-                                "mul" /
-                                "div" /
-                                "mod"
+                                "ge" { { return "gte"; } } /
+                                "nin" /
 
 unsupported                 =   "$" er:.* { return { error: "unsupported method: " + er }; }
 
