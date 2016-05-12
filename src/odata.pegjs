@@ -187,7 +187,7 @@ nanInfinity                 =   nan / negativeInfinity / positiveInfinity
 unreserved                  = a:[a-zA-Z0-9-_]+ { return a.join(''); }
 validstring                 = a:([^']/escapedQuote)* { return a.join('').replace(/('')/g, "'"); }
 escapedQuote                = a:"''" { return a; }
-identifierPart              = a:[!_a-zA-Z] b:unreserved? { return a + b; }
+identifierPart              = a:[!_a-zA-Z/] b:unreserved? { return a + b; }
 identifier                  =
                                 a:identifierPart list:("." i:identifier {return i;})? {
                                     if (list === "") list = [];
