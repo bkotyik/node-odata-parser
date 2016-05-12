@@ -268,7 +268,7 @@ identifierPathParts         =   "/" i:identifierPart list:identifierPathParts? {
                                 }
 identifierPath              =   a:identifier b:identifierPathParts? { return a + b; }
 selectList                  =
-                                i:(a:identifierPath b:".*"?{return a + b;}/"*") list:("," WSP? l:selectList {return l;})? {
+                                i:(a:identifierPath b:".*"?{return a + b;}) list:("," WSP? l:selectList {return l;})? {
                                     if (list === "") list = {};
                                     if (i.startsWith("!")) {
                                         list[i.replace("!","")] = 0;
