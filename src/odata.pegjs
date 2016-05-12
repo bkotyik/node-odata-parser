@@ -178,6 +178,9 @@ positiveInfinity            =   "INF"
 
 nanInfinity                 =   nan / negativeInfinity / positiveInfinity
 
+asc                         = { return 1; }
+desc                        = { return -1; }
+
 // end: OData literals
 
 /*
@@ -241,18 +244,18 @@ orderby                     =   "$orderby=" list:orderbyList {
                                     return { "$orderby": list }; }
                             /   "$orderby=" .* { return {"error": 'invalid $orderby parameter'}; }
 
-orderbyList                 = i:(id:identifier ord:(WSP ("asc"/"desc"))? {
+orderbyList                 = i:(id:identifier ord:(WSP (asc/desc))? {
                                     var result = {};
-                                    result[id] = ord[1] || 'asc';
+                                    result[id] = ord[1] || 1;
                                     return result;
                                 })
                               list:("," WSP? l:orderbyList{return l;})? {
 
-                                    if (list === "") list = [];
-                                    if (require('util').isArray(list[0])) {
-                                        list = list[0];
+                                    if (list === "") list = {};
+                                    var keys = Object.keys(i);
+                                    if (keys.length > 0) {
+                                        list[keys[0]] = i[keys[0]];
                                     }
-                                    list.unshift(i);
                                     return list;
                                 }
 
