@@ -187,7 +187,7 @@ nanInfinity                 =   nan / negativeInfinity / positiveInfinity
 unreserved                  = a:[a-zA-Z0-9-_]+ { return a.join(''); }
 validstring                 = a:([^']/escapedQuote)* { return a.join('').replace(/('')/g, "'"); }
 escapedQuote                = a:"''" { return a; }
-identifierPart              = a:[_a-zA-Z] b:unreserved? { return a + b; }
+identifierPart              = a:[!_a-zA-Z] b:unreserved? { return a + b; }
 identifier                  =
                                 a:identifierPart list:("." i:identifier {return i;})? {
                                     if (list === "") list = [];
@@ -269,11 +269,12 @@ identifierPathParts         =   "/" i:identifierPart list:identifierPathParts? {
 identifierPath              =   a:identifier b:identifierPathParts? { return a + b; }
 selectList                  =
                                 i:(a:identifierPath b:".*"?{return a + b;}/"*") list:("," WSP? l:selectList {return l;})? {
-                                    if (list === "") list = [];
-                                    if (require('util').isArray(list[0])) {
-                                        list = list[0];
+                                    if (list === "") list = {};
+                                    if (i.startsWith("!")) {
+                                        list[i.replace("!","")] = 0;
+                                    } else {
+                                        list[i] = 1;
                                     }
-                                    list.unshift(i);
                                     return list;
                                 }
 
