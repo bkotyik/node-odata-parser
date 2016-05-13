@@ -221,7 +221,7 @@ expandList                  =   i:identifierPath list:("," WSP? l:expandList {re
                                     if (require('util').isArray(list[0])) {
                                         list = list[0];
                                     }
-                                    list.unshift(i);
+                                    list.unshift(i.replace("/","."));
                                     return list;
                                 }
 
