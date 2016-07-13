@@ -16,10 +16,16 @@
   }
 
   function formatLeft(left) {
-    var obj = {};
-    obj[left.left.name] = {}
-    obj[left.left.name]["$"+left.type] = left.right.value == null ? left.right.name : left.right.value;
-    return obj;
+    if (left.left != null) {
+      // two operands are coming for example eq
+      var obj = {};
+      obj[left.left.name] = {}
+      obj[left.left.name]["$"+left.type] = left.right.value == null ? left.right.name : left.right.value;
+      return obj;
+    } else {
+      // only one operand for example startswith
+      return left;
+    }
   }
 
   function filterExprHelper(left, right){
@@ -297,16 +303,19 @@ filterExpr                  =
                               })? {
                                 return filterExprHelper(left, right);
                               }
+                              / cond
 
-booleanFunctions2Args       = "substringof" / "endswith" / "startswith" / "IsOf"
+startswith                  = "startswith" WSP? "(" arg0:part "," WSP? arg1:part ")" {
+                                                                  var key  = arg0.name;
+                                                                  var value = arg1.value;
+                                                                  return {
+                                                                      [key]: new RegExp(value+".*")
+                                                                  }
+                                                              }
 
-booleanFunc                 =  f:booleanFunctions2Args "(" arg0:part "," WSP? arg1:part ")" {
-                                    return {
-                                        type: "functioncall",
-                                        func: f,
-                                        args: [arg0, arg1]
-                                    }
-                                } /
+booleanFunctions2Args       = "substringof" / "endswith" / "IsOf" / startswith
+
+booleanFunc                 =  f:booleanFunctions2Args /
                                 "IsOf(" arg0:part ")" {
                                     return {
                                         type: "functioncall",
