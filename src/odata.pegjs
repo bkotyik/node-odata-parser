@@ -321,7 +321,7 @@ endswith                  = "endswith" WSP? "(" arg0:part "," WSP? arg1:part ")"
                                                                   }
                                                               }
 
-booleanFunctions2Args       = "substringof" / "endswith" / "IsOf" / startswith
+booleanFunctions2Args       = "substringof" / endswith / "IsOf" / startswith
 
 booleanFunc                 =  f:booleanFunctions2Args /
                                 "IsOf(" arg0:part ")" {
