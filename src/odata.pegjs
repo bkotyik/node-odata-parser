@@ -387,7 +387,7 @@ part                        =   booleanFunc /
                                 } /
                                 (u:identifierPath {
                                     return {
-                                        type: 'property', name: u
+                                        type: 'property', name: u.replace('/','.')
                                     };
                                 })
 
