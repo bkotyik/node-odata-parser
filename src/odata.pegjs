@@ -317,7 +317,7 @@ endswith                  = "endswith" WSP? "(" arg0:part "," WSP? arg1:part ")"
                                                                   var key  = arg0.name;
                                                                   var value = arg1.value;
                                                                   return {
-                                                                      [key]: new RegExp(".*"+value)
+                                                                       [key]: new RegExp(".*"+value)
                                                                   }
                                                               }
 
